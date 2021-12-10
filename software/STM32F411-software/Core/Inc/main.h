@@ -76,6 +76,31 @@ void Error_Handler(void);
 #define MAG_INT_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
+enum peripheral_idx {
+    PERIPHERAL_STM32_CONFIG = 0,
+    PERIPHERAL_MOTOR_CONRTOL= 1,
+    PERIPHERAL_LED          = 2,
+    PERIPHERAL_LEAK_DETECT  = 3,
+    PERIPHERAL_TEMP_SENS    = 4,
+    PERIPHERAL_PRES_SENS    = 5,
+    PERIPHERAL_RAD_SENS     = 6,
+    PERIPHERAL_CHLOR_SENS   = 7,
+    PERIPHERAL_INVALID      = 8,
+};
+
+enum write_or_read {
+    WRITE = 0,
+    READ  = 1,
+};
+
+struct command {
+    enum peripheral_idx peripheral;
+    enum write_or_read writeRead;
+    char type;
+    char channel;
+    short data;
+};
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

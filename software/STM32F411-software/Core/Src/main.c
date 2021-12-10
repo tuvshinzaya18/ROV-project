@@ -78,8 +78,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 
 }
 
+void execute_command(struct command com)
+{
+    return;
+}
+
 void decodeMessage()
 {
+    struct command com;
+    switch (command[0]){
+        case 1 << 0: com.peripheral = PERIPHERAL_STM32_CONFIG;break;
+        case 1 << 1: com.peripheral = PERIPHERAL_MOTOR_CONRTOL;break;
+        case 1 << 2: com.peripheral = PERIPHERAL_LED;break;
+        case 1 << 3: com.peripheral = PERIPHERAL_LEAK_DETECT;break;
+        case 1 << 4: com.peripheral = PERIPHERAL_TEMP_SENS;break;
+        case 1 << 5: com.peripheral = PERIPHERAL_PRES_SENS;break;
+        case 1 << 6: com.peripheral = PERIPHERAL_RAD_SENS;break;
+        case 1 << 7: com.peripheral = PERIPHERAL_CHLOR_SENS;break;
+        default: com.peripheral = PERIPHERAL_INVALID;
+    }
+
+    if (com.peripheral == PERIPHERAL_INVALID){
+        //do something if peripheral is invalid
+    }
+
+    if (command[1] & (1<<7) == 0){
+        com.writeRead = WRITE;
+    } else {
+        com.writeRead = READ;
+    }
+
+    com.type = command[1] >> 5 & 3;
+
+    switch (command[1] & 31){
+        case 1 << 0: com.channel = 0;break;
+        case 1 << 1: com.channel = 1;break;
+        case 1 << 2: com.channel = 2;break;
+        case 1 << 3: com.channel = 3;break;
+        case 1 << 4: com.channel = 4;break;
+        default: com.channel = 0xFF;
+    }
+
+    com.data = (((short) command[2])<<8 ) + ((short)command[3]);
+
+    execute_command(com);
 
     return_msg[0] = 0;
     return_msg[1] = 0;
